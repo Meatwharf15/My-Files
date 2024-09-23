@@ -1,0 +1,122 @@
+
+# Online Python - IDE, Editor, Compiler, Interpreter
+
+import random
+dealing = 0
+Smalloop = 0
+A = 11
+Playerchips = 100
+Playerhand = []
+Dealerhand = []
+
+count1 = 0
+count2 = 0
+deck = []
+
+while count1 < 4:
+    deck.append(A)
+    deck.append(2)
+    deck.append(3)
+    deck.append(4)
+    deck.append(5)
+    deck.append(6)
+    deck.append(7)
+    deck.append(8)
+    deck.append(9)
+    count1 += 1
+while count2 < 16:
+    deck.append(10)
+    count2 += 1
+
+def PlayAgain():
+    Retry = int(input("Press 1 to play."))
+    if Retry == 1:
+        return 6
+    else:
+        return 9
+
+while PlayAgain() == 6:
+    dealing = 0
+    Bet = int(input("How many chips would you like to bet?"))
+    if Bet > Playerchips:
+        Bet = int(input("You can't bet that many chips. Input a different number."))
+    else:
+        while dealing < 2:
+            randomcard1 = random.randint(0, len(deck) - 1)
+            Playerhand.append(deck[randomcard1])
+            del deck[randomcard1]
+        
+            randomcard2 = random.randint(0, len(deck) - 1)
+            Dealerhand.append(deck[randomcard2])
+            del deck[randomcard2]
+            dealing += 1
+
+
+    print("Your hand is", Playerhand)
+    print("The dealer's hand is", Dealerhand)
+
+    if sum(Playerhand) == 21:
+        Playerchips = Playerchips + (Bet * 1.5)
+        print("You got a blackjack! You currently have", Playerchips, "chips.")
+    elif sum(Dealerhand) == 21:
+        Playerchips -= Bet
+        print("The dealer got a blackjack. You currently have", Playerchips, "chips.")
+    else:
+        play = int(input("Put 1 to hit, 2 to stand."))
+
+        def Dealercards():
+            while sum(Dealerhand) < 16:
+                randomcard2 = random.randint(0, len(deck) - 1)
+                Dealerhand.append(deck[randomcard2])
+                del deck[randomcard2]
+            return Dealerhand
+
+        if play == 1:
+            while Smalloop == 0:
+                randomcard1 = random.randint(0, len(deck) - 1)
+                Playerhand.append(deck[randomcard1])
+                del deck[randomcard1]
+                print(Playerhand)
+                if sum(Playerhand) == 21:
+                    print("You got a blackjack!")
+                    Playerchips += (Bet*1.5)
+                    print("You currently have", Playerchips, "chips.")
+                    Playerhand.clear()
+                    Dealerhand.clear()
+                    Smalloop += 1
+                elif sum(Playerhand) > 21:
+                    print("You busted!")
+                    Playerchips -= Bet
+                    print("You currently have", Playerchips, "chips.")
+                    Playerhand.clear()
+                    Dealerhand.clear()
+                    Smalloop += 1
+                elif sum(Playerhand) < 21:
+                    play = int(input("Put 1 for hit, 2 for stay."))
+                    if play == 1:
+                        Smalloop += 0
+
+        elif play == 2:
+            print(Dealercards())
+            if sum(Dealercards()) > sum(Playerhand) and sum(Dealercards()) <= 21:
+                Playerchips -= Bet
+                print("The dealer wins. You currently have", Playerchips, "chips.")
+                Playerhand.clear()
+                Dealerhand.clear()
+            elif sum(Playerhand) > sum(Dealercards()) and sum(Playerhand) <= 21:
+                Playerchips += Bet
+                print("You win. You currently have", Playerchips, "chips.")
+                Playerhand.clear()
+                Dealerhand.clear()
+                PlayAgain()
+            elif sum(Dealercards()) > 21:
+                Playerchips += Bet
+                print("The dealer busted. You currently have", Playerchips, "chips.")
+                Playerhand.clear()
+                Dealerhand.clear()
+                PlayAgain()
+            elif sum(Playerhand) == sum(Dealercards()):
+                print("It's a tie.")
+                Playerhand.clear()
+                Dealerhand.clear()
+                PlayAgain()
