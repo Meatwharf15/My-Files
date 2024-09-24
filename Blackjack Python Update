@@ -1,0 +1,131 @@
+#After the fourth consecutive game, the Playerhand and Dealerhand lists don't clear, but the code doesn't immediately bust, so the game technically views the old game's cards as cleared. 
+
+import random
+dealing = 0
+Smalloop = 0
+list = [2, 3, 4, 5, 6, 7, 8, 9, 11]
+Playerchips = 100
+Playerhand = []
+Dealerhand = []
+
+count1 = 0
+count2 = 0
+deck = []
+
+while count1 < 4:
+    for x in list:
+	    deck.append(x)
+    count1 += 1
+while count2 < 16:
+    deck.append(10)
+    count2 += 1
+
+def PlayAgain():
+    Retry = int(input("Press 1 to play."))
+    if Retry == 1:
+        return True
+    else:
+        return False
+
+while True:
+    dealing = 0
+    Bet = int(input("How many chips would you like to bet?"))
+    if Bet > Playerchips:
+        Bet = int(input("You can't bet that many chips. Input a different number."))
+    else:
+        while dealing < 2:
+            randomcard1 = random.randint(0, len(deck) - 1)
+            Playerhand.append(deck[randomcard1])
+            del deck[randomcard1]
+        
+            randomcard2 = random.randint(0, len(deck) - 1)
+            Dealerhand.append(deck[randomcard2])
+            del deck[randomcard2]
+            dealing += 1
+        dealing = 0
+
+    print("Your hand is", Playerhand)
+    print("The dealer's hand is", Dealerhand)
+
+    if sum(Playerhand) == 21:
+        Playerchips = Playerchips + (Bet * 1.5)
+        print("You got a blackjack! You currently have", Playerchips, "chips.")
+        Playerhand.clear()
+        Dealerhand.clear()
+        break
+        
+    elif sum(Dealerhand) == 21:
+        Playerchips -= Bet
+        print("The dealer got a blackjack. You currently have", Playerchips, "chips.")
+        Playerhand.clear()
+        Dealerhand.clear()
+        break
+    else:
+        play = int(input("Put 1 to hit, 2 to stand."))
+
+        def Dealercards():
+            while sum(Dealerhand) < 16:
+                randomcard2 = random.randint(0, len(deck) - 1)
+                Dealerhand.append(deck[randomcard2])
+                del deck[randomcard2]
+                for i in range(len(Dealerhand)):
+                    if Dealerhand[i] == 11:
+                        if sum(Dealerhand) > 21:
+                            Dealerhand[i] = 1
+            return Dealerhand
+
+        if play == 1:
+            while Smalloop == 0:
+                randomcard1 = random.randint(0, len(deck) - 1)
+                Playerhand.append(deck[randomcard1])
+                del deck[randomcard1]
+                for x in range(len(Playerhand)):
+                    if Playerhand[x] == 11:
+                        if sum(Playerhand) > 21:
+                            Playerhand[x] = 1
+                print(Playerhand)
+                if sum(Playerhand) == 21:
+                    print("You got a blackjack!")
+                    Playerchips += (Bet*1.5)
+                    print("You currently have", Playerchips, "chips.")
+                    Playerhand.clear()
+                    Dealerhand.clear()
+                    Smalloop += 1
+                elif sum(Playerhand) > 21:
+                    print("You busted!")
+                    Playerchips -= Bet
+                    print("You currently have", Playerchips, "chips.")
+                    Playerhand.clear()
+                    Dealerhand.clear()
+                    Smalloop += 1
+                elif sum(Playerhand) < 21:
+                    play = int(input("Put 1 for hit, 2 for stand."))
+                    if play == 1:
+                        Smalloop += 0
+                    else:
+                        Smalloop += 1
+
+        if play == 2:
+            print(Dealercards())
+            if sum(Dealercards()) > sum(Playerhand) and sum(Dealercards()) <= 21:
+                Playerchips -= Bet
+                print("The dealer wins. You currently have", Playerchips, "chips.")
+                Playerhand.clear()
+                Dealerhand.clear()
+            elif sum(Playerhand) > sum(Dealercards()) and sum(Playerhand) <= 21:
+                Playerchips += Bet
+                print("You win. You currently have", Playerchips, "chips.")
+                Playerhand.clear()
+                Dealerhand.clear()
+                PlayAgain()
+            elif sum(Dealercards()) > 21:
+                Playerchips += Bet
+                print("The dealer busted. You currently have", Playerchips, "chips.")
+                Playerhand.clear()
+                Dealerhand.clear()
+                PlayAgain()
+            elif sum(Playerhand) == sum(Dealercards()):
+                print("It's a tie.")
+                Playerhand.clear()
+                Dealerhand.clear()
+                PlayAgain()
