@@ -12,6 +12,7 @@ count1 = 0
 count2 = 0
 deck = []
 
+#Lines 16-22 are for making the deck of cards.
 while count1 < 4:
     for x in list:
 	    deck.append(x)
